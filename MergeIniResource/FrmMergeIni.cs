@@ -51,7 +51,7 @@ namespace MergeIniResource
                 foreach (String file in files)
                 {
                     SetStatus("Reading file: " + file);
-                    if (!file.EndsWith("ini"))
+                    if (!file.ToLower().EndsWith("ini") && !file.ToLower().EndsWith("ani"))
                     {
                         continue;
                     }
