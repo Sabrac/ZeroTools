@@ -16,7 +16,7 @@ namespace MergeIniResource
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMergeIni());
+            Application.Run(new FrmMergeData());
         }
     }
 }

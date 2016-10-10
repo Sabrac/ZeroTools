@@ -62,8 +62,8 @@ namespace MergeIniResource
         {
             string source = txtSourceFile.Text;
             string target = txtTargetFile.Text;
-            if (!source.Substring(source.LastIndexOf(".")).Trim().Equals("ini") ||
-                !target.Substring(target.LastIndexOf(".")).Trim().Equals("ini"))
+            StringBuilder log = new StringBuilder();
+            if (!source.EndsWith("ini") || !target.EndsWith("ini"))
             {
                 MessageBox.Show("File's format is invalid");
                 return;
@@ -73,19 +73,23 @@ namespace MergeIniResource
             IniObject targetIni = new IniObject(target);
             sourceIni = ReadFile(sourceIni);
             targetIni = ReadFile(targetIni);
+            IniObject tmp = new IniObject();
+            tmp.name = sourceIni.name;
+            tmp.lsGraphic = new Dictionary<string, GraphicObject>(sourceIni.lsGraphic);
 
-            foreach (KeyValuePair<String, GraphicObject> data in sourceIni.lsGraphic)
+            foreach (KeyValuePair<String, GraphicObject> data in tmp.lsGraphic)
             {
                 if (targetIni.lsGraphic.ContainsKey(data.Key))
                 {
                     sourceIni.lsGraphic[data.Key] = targetIni.lsGraphic[data.Key];
-                    WriteLineLog("Found - " + data.Key);
+                    log.AppendLine("Found - " + data.Key);
                 }
             }
 
             List<IniObject> lsIni = new List<IniObject>();
             lsIni.Add(sourceIni);
             ExportFile(lsIni);
+            WriteLineLog(log.ToString());
 
             MessageBox.Show("Done !");
         }
@@ -140,7 +144,7 @@ namespace MergeIniResource
                         if (part.Length != 2)
                         {
                             WriteLog("[Error] ", Color.Red);
-                            WriteLineLog(String.Format("[File: {0}][Data: {1}] - Line does not contain 2 parts"));
+                            WriteLineLog(String.Format("[File: {0}][Data: {1}] - Line does not contain 2 parts", iniFile.name, line));
                         }
                         else
                         {
@@ -204,7 +208,7 @@ namespace MergeIniResource
 
         private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            throw new NotImplementedException();
+            
         }
 
         private void WriteLineLog(string content, Color? textColor = null)
